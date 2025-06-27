@@ -1,0 +1,14 @@
+{
+  "name": "7702pd-wallet",
+  "version": "1.0.0",
+  "description": "Simple phishing detection demo integrating EIP-7702",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "ethers": "^6.12.0",
+    "node-fetch": "^3.3.2"
+  }
+}
