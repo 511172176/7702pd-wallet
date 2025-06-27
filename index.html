@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>7702 Phishing Detector</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; }
+    #result { margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <h1>7702 Phishing Detector</h1>
+  <p>Enter an Ethereum address or domain to evaluate.</p>
+  <input id="input" type="text" placeholder="0x... or domain" size="40">
+  <button onclick="check()">Check</button>
+  <pre id="result"></pre>
+
+<script>
+async function check() {
+  const value = document.getElementById('input').value.trim();
+  if (!value) return;
+  const res = await fetch('/api/check', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ value })
+  });
+  const data = await res.json();
+  document.getElementById('result').textContent =
+    `Score: ${data.score}\nReasons: ${data.reasons.join(', ')}`;
+}
+</script>
+</body>
+</html>
