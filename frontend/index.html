@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>網域黑名單檢查器</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+  <div class="container mt-5">
+    <h2 class="mb-4">🌐 網域黑名單檢查器</h2>
+    <div class="input-group mb-3">
+      <input type="text" id="domainInput" class="form-control" placeholder="輸入網址，例如 blast-pools.pages.dev">
+      <button class="btn btn-primary" onclick="checkDomain()">檢查</button>
+    </div>
+    <div id="result" class="mt-4"></div>
+  </div>
+
+  <script>
+    async function checkDomain() {
+      const domain = document.getElementById("domainInput").value.trim();
+      const resultBox = document.getElementById("result");
+      resultBox.innerHTML = "⏳ 檢查中...";
+
+      try {
+        const res = await fetch("http://localhost:3000/check", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ address: domain })
+        });
+
+        const data = await res.json();
+
+        resultBox.innerHTML = `
+          ✅ <b>Domain</b>: ${data.domain}<br>
+          ${data.is_suspicious ? "🚨 <b>是否可疑</b>: <span class='text-danger'>是</span>" : "✅ <b>是否可疑</b>: <span class='text-success'>否</span>"}<br>
+          🛡️ <b>黑名單狀態</b>: ${
+            data.is_blacklisted
+              ? "<span class='text-danger'>🛑 被列入黑名單</span>"
+              : "<span class='text-success'>✅ 未發現列入黑名單</span>"
+          }<br>
+          📈 <b>Anomaly Score</b>: ${data.anomaly_score}
+        `;
+      } catch (err) {
+        console.error(err);
+        resultBox.innerHTML = "❌ 錯誤：無法送出請求，請確認伺服器已啟動。";
+      }
+    }
+  </script>
+</body>
+</html>
